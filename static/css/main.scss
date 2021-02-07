@@ -1,0 +1,120 @@
+@import 'reset.scss';
+@import 'vars.scss';
+@import 'controls.scss';
+@import 'icons.scss';
+
+body {
+    background-color: $background;
+    color: $text;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 19px;
+    padding: 12px;
+}
+
+.wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.nav {
+    margin: 10px 0 14px;
+    text-align: center;
+    &__item {
+        $this: &;
+        padding: 2px 0;
+        border-bottom: 2px solid transparent;
+        &--active {
+            cursor: default;
+            color: $link;
+            border-bottom: 2px solid $link;
+        }
+        &:hover:not(#{$this}--active) {
+            border-bottom: 2px solid $text;
+        }
+        &:not(:last-child) {
+            margin-right: 17px;
+        }
+    }
+}
+
+.controls {
+    display: flex;
+    & > *:not(:last-child) {
+        margin-right: 8px;
+    }
+    &__search {
+        flex: 1;        
+    }
+    &__search-input {
+        width: 100%;
+    }
+    &--filter-content {
+        margin-top: 8px;
+        & > * {
+            flex: 1;
+        }
+    }
+}
+
+.sort-list {
+    $this: &;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 42px;
+    background: #fff;
+    &__container {
+        position: relative;
+    }
+    &__button {
+        width: 100%;
+    }
+    &__item {
+        &:not(:last-child) {
+            border-bottom: 1px solid #F9F9F9;
+        }
+    }
+    label#{$this}__label {
+        font-size: 14px;
+        line-height: 16px;
+        height: 100%;
+        width: 100%;
+        padding: 16px 11px 16px 43px;
+        box-sizing: border-box;
+        &:before {
+            left: 11px;
+            top: 14px;
+        }
+        &:after {
+            left: 14px;
+            top: 17px;
+        }
+    }
+}
+
+.links { 
+    margin: 24px 0 8px;
+    &__title {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 23px;
+        margin-bottom: 16px;
+    }
+    &__icon {
+        margin-right: 12px;
+    }
+    &__item {
+        display: flex;
+        font-size: 14px;
+        line-height: 140%;
+        color: $link;
+        &:hover {
+            text-decoration: underline;
+        }
+        &:not(:last-child) {
+            margin-bottom: 12px;
+        }
+    }
+}
+

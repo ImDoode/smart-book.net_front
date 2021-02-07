@@ -1,0 +1,246 @@
+
+/** Логика работы фильтров */
+const sortTitles = {
+    popular: 'Самые популярные',
+    name: 'В алфавитном порядке',
+    size: 'По размеру',
+    date: 'Самые свежие книги'
+}
+let sortBy = 'popular';
+let searchQuery = '';
+let filters = {
+    flag: [],
+}
+const $lastBooks = document.querySelector('.js-last-books-container');
+const $allBooksTitle = document.querySelector('.js-all-books-title');
+const $resetFilterButton = document.querySelector('.js-reset-filters');
+const $resetAuthorButton = document.querySelector('.js-reset-authors');
+const $resetAuthorsContainer = document.querySelector('.js-autor-filtered-container');
+const $authorsFiltered = document.querySelector('.js-autor-filtered');
+const $emptyMessage = document.querySelector('.js-empty-result');
+
+/** Сохранение параметров фильтров в УРЛ */
+setFiltersToUrl = () => {
+    const urlData = [];
+    if (isAnyActiveFilters())
+        urlData.push('filters='+JSON.stringify(filters));
+    if (searchQuery)
+        urlData.push('search='+searchQuery);
+    if (sortBy)
+        urlData.push('sort='+sortBy);
+    const refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + urlData.join('&');    
+    window.history.pushState({ path: refresh }, '', refresh);
+}
+
+/** Загрузка параметров фильтров из УРЛ */
+getFiltersFromUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    searchQuery = urlParams.get('search') || '';
+    document.querySelector('.js-search').value = searchQuery;
+
+    sortBy = urlParams.get('sort') || sortBy;
+    document.querySelectorAll('.js-sort').forEach(item => {
+        item.checked = sortBy === item.value;
+    });
+
+    filters = JSON.parse(urlParams.get('filters')) || filters;
+    for (let type in filters) {
+        document.querySelectorAll(`.js-filter[data-type="${type}"]`).forEach(item => {
+            item.classList.toggle('filter__item--active', filters[type].includes(item.dataset.value));
+        })
+    }
+    
+    $resetFilterButton.classList.toggle('hidden', !isAnyActiveFilters());
+}
+
+getBookChunk = (book) => {
+    return `
+    <a class="links__item" href="${book.link}">
+        <img class="links__icon" src="static/icons/flags/${book.flag}.svg" alt="${book.flag}">
+        <span class="links__name">${book.book_name}</span>
+    </a>
+    `;
+}
+
+getAuthorChunk = (author) => {
+    return `
+    <a
+        class="links__item js-filter js-author"
+        href="#"
+        data-value="${author.id}"
+        data-type="author_id"
+    >
+        <span class="links__name">${author.name}</span>
+    </a>
+    `;
+}
+
+getBooksSortedByDate = (books) => {
+    return books.sort(function(a,b){
+        return new Date(b.added) - new Date(a.added);
+    });
+}
+
+getBooksSortedByName = (books) => {
+    return books.sort(function(a,b){
+        if(a.book_name < b.book_name) { return -1; }
+        if(a.book_name > b.book_name) { return 1; }
+        return 0;
+    });
+}
+
+getBooksSortedByDownloads = (books) => {
+    return books.sort(function(a,b){
+        return +b.downloads - +a.downloads;
+    });
+}
+
+getBooksSortedBySize = (books) => {
+    return books.sort(function(a,b){
+        return b.size - a.size;
+    });
+}
+
+getSortedBooks = (books, sortBy) => {
+    switch (sortBy) {
+        case 'date': return getBooksSortedByDate(books)
+        case 'name': return getBooksSortedByName(books)
+        case 'popular': return getBooksSortedByDownloads(books)
+        case 'size': return getBooksSortedBySize(books)
+        default: return getBooksSortedByDownloads(books)
+    }
+} 
+
+getFilteredBooks = (books, filterType, filterValues) => {
+    return books.filter((book) => filterValues.includes(book[filterType] && book[filterType].toString()) )
+}
+
+updateBookList = (selector, books) => {
+    document.querySelector(selector).innerHTML = books.map(book => getBookChunk(book)).join(' ');
+}
+
+updateAuthorList = (selector, authors) => {
+    document.querySelector(selector).innerHTML = authors.map(author => getAuthorChunk(author)).join(' ');
+}
+
+/** Главная функция по отрисовке основного списка книг с учётом всех фильтров, сортировки и поиска */
+setAllFiltersAndRenderBooks = () => {
+    setFiltersToUrl();
+    // Фильтруем по поисковому запросу
+    let processedBooks = data.books.filter(item => item.book_name.toLowerCase().indexOf(searchQuery.toLowerCase().trim()) > -1);
+    // Фильтруем по фильтрам
+    for (let type in filters) {
+        if (!!filters[type].length)
+            processedBooks = getFilteredBooks(processedBooks, type, filters[type]);
+    }
+    // Сортируем
+    processedBooks = getSortedBooks(processedBooks, sortBy);
+    // Обновляем
+    updateBookList('.js-all-books', processedBooks);    
+    $lastBooks.classList.toggle('hidden', processedBooks.length < data.books.length);
+    $emptyMessage.classList.toggle('hidden', processedBooks.length > 0);
+};
+
+
+/** Логика работы поиска */
+document.querySelector('.js-search').addEventListener('keyup', event => {
+    searchQuery = document.querySelector('.js-search').value;
+    if (searchQuery.length == 0) { // Если поиск отменён -- возвращаем приложение в исходное состояние
+        $allBooksTitle.textContent = sortTitles[sortBy];
+        setAllFiltersAndRenderBooks();
+        return;
+    }
+    setAllFiltersAndRenderBooks();
+    $allBooksTitle.textContent = `Поиск (${sortTitles[sortBy].toLowerCase()})`;
+});
+
+/** Логика работы сортировки */
+document.querySelectorAll('.js-sort').forEach(item => {
+    item.addEventListener('click', () => {
+        if (!item.checked) return;
+        sortBy = item.value;
+        $allBooksTitle.textContent = searchQuery ? `Поиск (${sortTitles[sortBy].toLowerCase()})` : sortTitles[sortBy];
+        setAllFiltersAndRenderBooks()
+    })
+});
+
+/** Логика добавления-удаления фильтров */
+addFilterListener = (container) => {
+    container.querySelectorAll('.js-filter').forEach(item => {
+        item.addEventListener('click', () => {
+            const removeItemFromArray = (arr, value) => {
+                let i = 0;
+                while (i < arr.length) {
+                    if (arr[i] === value) {
+                        arr.splice(i, 1);
+                    } else {
+                        ++i;
+                    }
+                }
+                return arr;
+            }
+            item.classList.toggle('filter__item--active');
+            if (!filters[item.dataset.type]) {
+                filters[item.dataset.type] = [];
+            }
+            if (item.classList.contains('filter__item--active')) {
+                filters[item.dataset.type].push(item.dataset.value);
+            } else {
+                removeItemFromArray(filters[item.dataset.type], item.dataset.value);
+            }
+            setAllFiltersAndRenderBooks();
+            $resetFilterButton.classList.toggle('hidden', !isAnyActiveFilters());
+            if (filters['author_id'] && filters['author_id'].length > 0) {
+                $resetAuthorsContainer.classList.remove('hidden');
+                $authorsFiltered.innerHTML = filters['author_id'].map(authorId => `<p>${data.authors.find((author) => author.id == authorId).name}</p>`).join(' ');
+            } else {
+                $resetAuthorsContainer.classList.add('hidden');
+            }
+            //debugger;
+        })
+    });
+};
+addFilterListener(document);
+
+
+isAnyActiveFilters = () => {
+    let activeFilters = 0;
+    for (let type in filters) {
+        activeFilters += filters[type].length;
+    }
+    return !!activeFilters;
+}
+
+/** Логика работы кнопки сброса фильтров */
+$resetFilterButton.addEventListener('click', () => {
+    for (let type in filters) {
+        filters[type] = [];
+    }
+    document.querySelectorAll('.js-filter').forEach(item => {
+        item.classList.remove('filter__item--active');
+    });
+    
+    $resetFilterButton.classList.toggle('hidden', !isAnyActiveFilters());
+    setAllFiltersAndRenderBooks();
+});
+
+$resetAuthorButton.addEventListener('click', () => {
+    filters['author_id'] = [];
+    $resetAuthorsContainer.classList.add('hidden');
+    $resetFilterButton.classList.toggle('hidden', !isAnyActiveFilters());
+    setAllFiltersAndRenderBooks();
+});
+
+// Инициализируем дефолтное отображение книг
+updateBookList('.js-last-books', getBooksSortedByDate(data.books).slice(0, 10));
+updateAuthorList('.js-authors', data.authors);
+addFilterListener(document.querySelector('.js-authors'));
+document.querySelectorAll('.js-author').forEach(item => {
+    item.addEventListener('click', () => {
+        changePage('#books-page');
+    })
+});
+getFiltersFromUrl();
+setAllFiltersAndRenderBooks();
+
