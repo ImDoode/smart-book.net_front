@@ -11,6 +11,8 @@ let searchQuery = '';
 let filters = {
     flag: [],
 }
+let lang = '';
+
 const $lastBooks = document.querySelector('.js-last-books-container');
 const $allBooksTitle = document.querySelector('.js-all-books-title');
 const $resetFilterButton = document.querySelector('.js-reset-filters');
@@ -28,6 +30,8 @@ setFiltersToUrl = () => {
         urlData.push('search='+searchQuery);
     if (sortBy)
         urlData.push('sort='+sortBy);
+    if (lang)
+        urlData.push('lang='+lang);
     const refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + urlData.join('&');    
     window.history.pushState({ path: refresh }, '', refresh);
 }
@@ -43,6 +47,7 @@ getFiltersFromUrl = () => {
     document.querySelectorAll('.js-sort').forEach(item => {
         item.checked = sortBy === item.value;
     });
+    lang = urlParams.get('lang');
 
     filters = JSON.parse(urlParams.get('filters')) || filters;
     for (let type in filters) {
