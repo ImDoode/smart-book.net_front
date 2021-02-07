@@ -364,4 +364,9 @@ input[type="radio"]:not(:checked):not(:indeterminate) + label:after {
   -webkit-transition-duration: .2s;
           transition-duration: .2s;
 }
+
+input[type="search"]::-webkit-search-decoration:hover,
+input[type="search"]::-webkit-search-cancel-button:hover {
+  cursor: pointer;
+}
 /*# sourceMappingURL=controls.css.map */

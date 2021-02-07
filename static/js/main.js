@@ -4,7 +4,6 @@ document.body.classList.remove('js-stop-transition');
 /** Тогглер для переключения отображения скрытых элементов по айди */
 document.querySelectorAll('.js-id-toggler').forEach(item => {
     item.addEventListener('click', event => {
-        item.classList.toggle('toggled');
         document.getElementById(item.dataset.toggleId).classList.toggle('hidden');
     })
 });
@@ -63,15 +62,15 @@ document.querySelectorAll('.js-hide-click-outside').forEach(item => {
 /** Переключение страниц */
 document.querySelectorAll('.js-change-tab').forEach(item => {
     item.addEventListener('click', event => {
-        document.querySelectorAll('.js-change-tab').forEach(item => {
-            item.classList.remove('nav__item--active');
-        });
-        item.classList.add('nav__item--active');
         changePage(item.dataset.tabSelector);
     })
 });
 
 changePage = (selector) => {
+    document.querySelectorAll('.js-change-tab').forEach(item => {
+        item.classList.remove('nav__item--active');
+    });
+    document.querySelector(`[data-tab-selector="${selector}"]`).classList.add('nav__item--active');
     document.querySelectorAll('.js-tab').forEach(item => {
         item.classList.add('hidden');
     });

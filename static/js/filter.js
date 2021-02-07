@@ -78,7 +78,7 @@ getAuthorChunk = (author) => {
 
 getBooksSortedByDate = (books) => {
     return books.sort(function(a,b){
-        return new Date(b.added) - new Date(a.added);
+        return new Date(b.publication_date) - new Date(a.publication_date);
     });
 }
 
@@ -104,7 +104,7 @@ getBooksSortedBySize = (books) => {
 
 getSortedBooks = (books, sortBy) => {
     switch (sortBy) {
-        case 'date': return getBooksSortedByDate(books)
+        case 'publication_date': return getBooksSortedByDate(books)
         case 'name': return getBooksSortedByName(books)
         case 'popular': return getBooksSortedByDownloads(books)
         case 'size': return getBooksSortedBySize(books)
@@ -113,7 +113,7 @@ getSortedBooks = (books, sortBy) => {
 } 
 
 getFilteredBooks = (books, filterType, filterValues) => {
-    return books.filter((book) => filterValues.includes(book[filterType] && book[filterType].toString()) )
+    return books.filter((book) => filterValues.map(item => item.toString()).includes((typeof book[filterType] !== 'undefined') && book[filterType].toString()) )
 }
 
 updateBookList = (selector, books) => {
@@ -138,13 +138,12 @@ setAllFiltersAndRenderBooks = () => {
     processedBooks = getSortedBooks(processedBooks, sortBy);
     // Обновляем
     updateBookList('.js-all-books', processedBooks);    
-    $lastBooks.classList.toggle('hidden', processedBooks.length < data.books.length);
+    $lastBooks.classList.toggle('hidden', (processedBooks.length < data.books.length) || sortBy !== 'popular');
     $emptyMessage.classList.toggle('hidden', processedBooks.length > 0);
 };
 
 
-/** Логика работы поиска */
-document.querySelector('.js-search').addEventListener('keyup', event => {
+searchHandle = () => {
     searchQuery = document.querySelector('.js-search').value;
     if (searchQuery.length == 0) { // Если поиск отменён -- возвращаем приложение в исходное состояние
         $allBooksTitle.textContent = sortTitles[sortBy];
@@ -153,7 +152,14 @@ document.querySelector('.js-search').addEventListener('keyup', event => {
     }
     setAllFiltersAndRenderBooks();
     $allBooksTitle.textContent = `Поиск (${sortTitles[sortBy].toLowerCase()})`;
-});
+}
+
+
+/** Логика работы поиска */
+document.querySelector('.js-search').addEventListener('search', searchHandle);
+document.querySelector('.js-search').addEventListener('keyup', searchHandle);
+
+
 
 /** Логика работы сортировки */
 document.querySelectorAll('.js-sort').forEach(item => {
@@ -161,7 +167,8 @@ document.querySelectorAll('.js-sort').forEach(item => {
         if (!item.checked) return;
         sortBy = item.value;
         $allBooksTitle.textContent = searchQuery ? `Поиск (${sortTitles[sortBy].toLowerCase()})` : sortTitles[sortBy];
-        setAllFiltersAndRenderBooks()
+        document.getElementById('js-sort-list').classList.toggle('hidden');
+        setAllFiltersAndRenderBooks();
     })
 });
 
@@ -233,7 +240,7 @@ $resetAuthorButton.addEventListener('click', () => {
 });
 
 // Инициализируем дефолтное отображение книг
-updateBookList('.js-last-books', getBooksSortedByDate(data.books).slice(0, 10));
+updateBookList('.js-last-books', getFilteredBooks(data.books, 'new', [true]));
 updateAuthorList('.js-authors', data.authors);
 addFilterListener(document.querySelector('.js-authors'));
 document.querySelectorAll('.js-author').forEach(item => {

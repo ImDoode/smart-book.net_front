@@ -390,6 +390,11 @@ input[type="radio"]:not(:checked):not(:indeterminate) + label:after {
           transition-duration: .2s;
 }
 
+input[type="search"]::-webkit-search-decoration:hover,
+input[type="search"]::-webkit-search-cancel-button:hover {
+  cursor: pointer;
+}
+
 body {
   background-color: #F8F8F8;
   color: #595959;
