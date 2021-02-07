@@ -4,7 +4,7 @@ const sortTitles = {
     popular: 'Самые популярные',
     name: 'В алфавитном порядке',
     size: 'По размеру',
-    date: 'Самые свежие книги'
+    publication_date: 'Самые свежие книги'
 }
 let sortBy = 'popular';
 let searchQuery = '';
@@ -140,6 +140,9 @@ setAllFiltersAndRenderBooks = () => {
     updateBookList('.js-all-books', processedBooks);    
     $lastBooks.classList.toggle('hidden', (processedBooks.length < data.books.length) || sortBy !== 'popular');
     $emptyMessage.classList.toggle('hidden', processedBooks.length > 0);
+    document.querySelector('[data-toggle-id="js-filter-buttons"]').classList.toggle('active', isAnyActiveFilters());
+    document.querySelector('[data-toggle-id="js-modal-filter"]').classList.toggle('active', isAnyActiveFilters());
+    isAnyActiveFilters() && document.getElementById('js-filter-buttons').classList.remove('hidden');
 };
 
 

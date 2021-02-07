@@ -60,8 +60,13 @@
     &--sort #{$this}__icon {
         background-image: url("data:image/svg+xml, #{$icon-sort}");
     }
-    &--settings #{$this}__icon {
-        background-image: url("data:image/svg+xml, #{$icon-settings}");
+    &--settings {
+        #{$this}__icon {
+            background-image: url("data:image/svg+xml, #{$icon-settings}"); 
+        }
+        &.active #{$this}__icon {
+            background-image: url("data:image/svg+xml, #{$icon-settings-hover}");
+        }
     }
     #{$this}__icon {
         display: inline-block;
@@ -73,6 +78,10 @@
     }
     &__title {
         margin-left: 12px;
+    }
+    &.active {
+        background-color: $control-active;
+        color: #fff;
     }
 }
 

@@ -4,6 +4,7 @@ document.body.classList.remove('js-stop-transition');
 /** Тогглер для переключения отображения скрытых элементов по айди */
 document.querySelectorAll('.js-id-toggler').forEach(item => {
     item.addEventListener('click', event => {
+        item.classList.toggle('toggled');
         document.getElementById(item.dataset.toggleId).classList.toggle('hidden');
     })
 });

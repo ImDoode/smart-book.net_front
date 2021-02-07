@@ -89,6 +89,10 @@
   background-image: url("data:image/svg+xml, %3Csvg width='20' height='18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 18H3v-2H0v-2h3v-2h2v6zm15-2H7v-2h13v2zm-5-4h-2v-2H0V8h13V6.012h2V12zm5-2h-3V8h3v2zM9 6H7V4H0V2h7V0h2v6zm11-2h-9V2h9v2z' fill='%233897F1'/%3E%3C/svg%3E");
 }
 
+.button--settings.active .button__icon {
+  background-image: url("data:image/svg+xml, %3Csvg width='20' height='18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 18H3v-2H0v-2h3v-2h2v6zm15-2H7v-2h13v2zm-5-4h-2v-2H0V8h13V6.012h2V12zm5-2h-3V8h3v2zM9 6H7V4H0V2h7V0h2v6zm11-2h-9V2h9v2z' fill='%23ffffff'/%3E%3C/svg%3E");
+}
+
 .button .button__icon {
   display: inline-block;
   height: 20px;
@@ -100,6 +104,11 @@
 
 .button__title {
   margin-left: 12px;
+}
+
+.button.active {
+  background-color: #3897F1;
+  color: #fff;
 }
 
 .input {
