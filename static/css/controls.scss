@@ -244,7 +244,7 @@ input[type="radio"] {
         border-bottom: 1px solid $harmon-border;
     }
     &__item.active #{$this}__toggler:after {
-        transform: rotate(0deg);
+        transform: rotate(180deg);
     }
     &__toggler {
         width: 100%;
@@ -270,7 +270,7 @@ input[type="radio"] {
             height: 7px;
             background: url("data:image/svg+xml, #{$icon-chevron}");
             background-size: contain;
-            transform: rotate(180deg);
+            transform: rotate(0deg);
             transition-duration: .2s;
         }
     }
