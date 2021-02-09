@@ -157,6 +157,7 @@ setAllFiltersAndRenderBooks = () => {
     // Обновляем
     updateBookList('.js-all-books', processedBooks);
     $allBooksTitle.textContent = searchQuery ? `Поиск (${sortTitles[sortBy].pageTitle.toLowerCase()})` : sortTitles[sortBy].pageTitle;
+    $sortButtonTitle.textContent = sortTitles[sortBy].buttonLabel;
     $lastBooks.classList.toggle('hidden', (processedBooks.length < data.books.length) || sortBy !== 'popular');
     $emptyMessage.classList.toggle('hidden', processedBooks.length > 0);
     document.querySelector('[data-toggle-id="js-filter-buttons"]').classList.toggle('active', isAnyActiveFilters());
@@ -167,11 +168,6 @@ setAllFiltersAndRenderBooks = () => {
 
 searchHandle = () => {
     searchQuery = document.querySelector('.js-search').value;
-    if (searchQuery.length == 0) { // Если поиск отменён -- возвращаем приложение в исходное состояние
-        $allBooksTitle.textContent = sortTitles[sortBy].pageTitle;
-        setAllFiltersAndRenderBooks();
-        return;
-    }
     setAllFiltersAndRenderBooks();
 }
 
@@ -187,7 +183,6 @@ document.querySelectorAll('.js-sort').forEach(item => {
     item.addEventListener('click', () => {
         if (!item.checked) return;
         sortBy = item.value;
-        $sortButtonTitle.textContent = sortTitles[sortBy].buttonLabel;
         document.getElementById('js-sort-list').classList.toggle('hidden');
         setAllFiltersAndRenderBooks();
     })
