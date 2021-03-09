@@ -1,23 +1,5 @@
 
 /** Логика работы фильтров */
-const sortTitles = {
-    popular: {
-        pageTitle: 'Самые популярные',
-        buttonLabel: 'По пулярности'
-    },
-    name: {
-        pageTitle: 'В алфавитном порядке',
-        buttonLabel: 'По названию'
-    },
-    size: {
-        pageTitle: 'По размеру',
-        buttonLabel: 'По размеру'
-    },
-    publication_date: {
-        pageTitle: 'Самые свежие книги',
-        buttonLabel: 'По дате'
-    }
-}
 let sortBy = 'popular';
 let searchQuery = '';
 let filters = {
@@ -77,6 +59,9 @@ getBookChunk = (book) => {
     <a class="links__item" href="${book.link}">
         <img class="links__icon" src="static/icons/flags/${book.flag}.svg" alt="${book.flag}">
         <span class="links__name">${book.book_name}</span>
+        ${book.growth > 0 ? `
+        <span class="links__growth links__growth--${book.growthIcon}">${book.growth}</span>
+        ` : ``}
     </a>
     `;
 }

@@ -300,8 +300,8 @@ input[type="radio"]:not(:checked):not(:indeterminate) + label:after {
 }
 
 .harmon__item.active .harmon__toggler:after {
-  -webkit-transform: rotate(0deg);
-          transform: rotate(0deg);
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
 }
 
 .harmon__toggler {
@@ -330,8 +330,8 @@ input[type="radio"]:not(:checked):not(:indeterminate) + label:after {
   height: 7px;
   background: url("data:image/svg+xml, %3Csvg width='14' height='8' viewBox='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7.00001 7.71309L13.01 1.70209L11.596 0.288086L6.99601 4.88809L2.40301 0.288085L0.98901 1.70209L7.00001 7.71309Z' fill='%233897F1'/%3E%3C/svg%3E%0A");
   background-size: contain;
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
   -webkit-transition-duration: .2s;
           transition-duration: .2s;
 }

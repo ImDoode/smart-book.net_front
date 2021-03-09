@@ -116,5 +116,20 @@ body {
             margin-bottom: 12px;
         }
     }
+    &__growth {
+        margin-left: auto;
+        display: inline-block;
+        padding-right: 11px;
+        font-size: 10px;
+        color: $text;
+        &--down {
+            background: url('../icons/down.svg') 100% 4px no-repeat;
+            background-size: 9px;
+        }
+        &--up {
+            background: url('../icons/up.svg') 100% 4px no-repeat;
+            background-size: 9px;
+        }
+    }
 }
 
