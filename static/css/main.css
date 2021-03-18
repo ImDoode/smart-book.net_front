@@ -307,6 +307,9 @@ input[type="radio"]:not(:checked):not(:indeterminate) + label:after {
   -webkit-box-flex: 1;
       -ms-flex: 1 0 auto;
           flex: 1 0 auto;
+  max-height: calc(100% - 120px);
+  margin-bottom: 20px;
+  overflow-y: auto;
 }
 
 .modal__decline-button {
@@ -362,12 +365,11 @@ input[type="radio"]:not(:checked):not(:indeterminate) + label:after {
 }
 
 .harmon__content {
-  margin-bottom: 24px;
+  margin-bottom: 5px;
 }
 
 .filter {
   display: -webkit-box;
-  margin: 0 -6px;
 }
 
 .filter__item {
